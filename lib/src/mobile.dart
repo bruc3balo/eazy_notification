@@ -1,10 +1,10 @@
 // import 'dart:isolate';
-import 'package:awesome_notifications/awesome_notifications.dart';
+export 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:eazy_notification/eazy_notification.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class MobileNotificationService implements NotificationService {
+class MobileNotificationService implements EazyNotificationService {
   final AwesomeNotifications awesomeNotifications = AwesomeNotifications();
   late final ReceivedAction? initialAction;
   bool initialized = false;
@@ -12,20 +12,18 @@ class MobileNotificationService implements NotificationService {
   final String? languageCode;
   final List<NotificationChannel> channels;
   final List<NotificationChannelGroup> channelGroups;
-  final Future<bool> Function() onAskForPermission;
 
   MobileNotificationService({
     this.appIcon,
     this.languageCode,
-    required this.onAskForPermission,
-    this.channels = const [],
+    required this.channels,
     this.channelGroups = const [],
   });
 
   @override
   Future<void> init() async {
     if (initialized) return;
-
+    WidgetsFlutterBinding.ensureInitialized();
     initialized = await awesomeNotifications.initialize(
       appIcon,
       channels,
@@ -158,12 +156,13 @@ class MobileNotificationService implements NotificationService {
   Future<bool> _hasNotificationPermissions({
     required BuildContext context,
     required String notificationChannel,
+    required Future<bool> Function() hasAllowedPermissionRational,
   }) async {
     bool isAllowed = await awesomeNotifications.isNotificationAllowed();
     if (isAllowed) return true;
 
     if (context.mounted) {
-      bool accepted = await onAskForPermission();
+      bool accepted = await hasAllowedPermissionRational();
       if (!accepted) return false;
 
       isAllowed =
@@ -193,9 +192,13 @@ class MobileNotificationService implements NotificationService {
       return false;
     }
 
+    Future<bool> Function() hasAllowedPermissionRational =
+        mobileOptions.hasAllowedPermissionRational ?? () async => false;
+
     bool isAllowed = await _hasNotificationPermissions(
       context: context,
       notificationChannel: channelName,
+      hasAllowedPermissionRational: hasAllowedPermissionRational,
     );
 
     if (!isAllowed) {
@@ -243,11 +246,12 @@ class MobileNotificationService implements NotificationService {
   }
 
   @override
-  Future<bool> pushNotification(
-      {required BuildContext context,
-      MobileOptions? mobileOptions,
-      WebOptions? webOptions,
-      DesktopOptions? desktopOptions}) {
+  Future<bool> pushNotification({
+    required BuildContext context,
+    MobileOptions? mobileOptions,
+    WebOptions? webOptions,
+    DesktopOptions? desktopOptions,
+  }) {
     if (mobileOptions == null) {
       throw Exception("Provide mobile options for MobileNotificationService");
     }

@@ -1,8 +1,8 @@
 import 'package:eazy_notification/eazy_notification.dart';
 import 'package:flutter/material.dart';
-import 'package:local_notifier/local_notifier.dart';
+export 'package:local_notifier/local_notifier.dart';
 
-class DesktopNotificationService extends NotificationService {
+class DesktopNotificationService extends EazyNotificationService {
   final LocalNotifier notifier = LocalNotifier.instance;
 
   final String appName;
@@ -11,6 +11,7 @@ class DesktopNotificationService extends NotificationService {
 
   @override
   Future<void> init() async {
+    WidgetsFlutterBinding.ensureInitialized();
     await notifier.setup(
       appName: appName,
       // The parameter shortcutPolicy only works on Windows

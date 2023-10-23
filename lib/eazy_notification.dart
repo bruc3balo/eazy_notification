@@ -6,7 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:local_notifier/local_notifier.dart';
 
-abstract class NotificationService {
+export 'src/desktop.dart';
+export 'src/mobile.dart';
+export 'src/web.dart';
+export 'package:mplatform/mplatform.dart';
+
+abstract class EazyNotificationService {
   Future<void> init();
 
   Future<bool> pushNotification({
@@ -37,6 +42,7 @@ class MobileOptions {
   Map<String, String?>? payload;
   List<NotificationActionButton> actions = const [];
   NotificationCalendar? schedule;
+  Future<bool> Function()? hasAllowedPermissionRational;
 
   MobileOptions({
     required this.channel,
@@ -58,6 +64,7 @@ class MobileOptions {
     this.payload,
     this.actions = const [],
     this.schedule,
+    this.hasAllowedPermissionRational,
   });
 }
 

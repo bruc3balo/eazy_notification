@@ -1,6 +1,6 @@
-import 'package:elegant_notification/elegant_notification.dart';
-import 'package:elegant_notification/resources/arrays.dart';
-import 'package:elegant_notification/resources/colors.dart';
+export 'package:elegant_notification/elegant_notification.dart';
+export 'package:elegant_notification/resources/arrays.dart';
+export 'package:elegant_notification/resources/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:eazy_notification/eazy_notification.dart';
 
@@ -48,7 +48,7 @@ class NotificationStyle {
   });
 }
 
-class WebNotificationService implements NotificationService {
+class WebNotificationService implements EazyNotificationService {
   bool _showNotification({
     required BuildContext context,
     required WebOptions webOptions,
@@ -92,6 +92,7 @@ class WebNotificationService implements NotificationService {
 
   @override
   Future<void> init() async {
+    WidgetsFlutterBinding.ensureInitialized();
     debugPrint("Web notifications initiated");
   }
 
