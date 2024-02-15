@@ -18,9 +18,10 @@ dependencies:
   flutter:
     sdk: flutter
   mplatform: ^0.0.2
-  awesome_notifications: ^0.8.2
+#  awesome_notifications: ^0.8.2
   local_notifier: ^0.1.5
   elegant_notification: ^1.11.2
+  flutter_local_notifications: ^16.3.2
 
 dev_dependencies:
   flutter_test:

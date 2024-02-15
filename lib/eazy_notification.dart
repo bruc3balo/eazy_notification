@@ -1,13 +1,14 @@
 library eazy_notification;
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:eazy_notification/src/web.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:local_notifier/local_notifier.dart';
 
 export 'src/desktop.dart';
 export 'src/mobile.dart';
+export 'src/mobile_local.dart';
 export 'src/web.dart';
 export 'package:mplatform/mplatform.dart';
 
@@ -22,6 +23,20 @@ abstract class EazyNotificationService {
   });
 }
 
+class NotificationChannel {
+  final String id;
+  final String name;
+  final String description;
+
+  NotificationChannel({
+    required this.id,
+    required this.name,
+    required this.description,
+  });
+}
+
+
+
 class MobileOptions {
   NotificationChannel channel;
   int notificationId;
@@ -33,15 +48,12 @@ class MobileOptions {
   bool autoDismissible = true;
   Duration? timeout;
   Duration? chronometer;
-  ActionType actionType = ActionType.Default;
-  NotificationLayout notificationLayout = NotificationLayout.BigText;
-  NotificationCategory notificationCategory = NotificationCategory.Event;
+  Importance importance;
+  Priority priority;
   String? bigPicture;
   String? largeIcon;
   String? icon;
   Map<String, String?>? payload;
-  List<NotificationActionButton> actions = const [];
-  NotificationCalendar? schedule;
   Future<bool> Function()? hasAllowedPermissionRational;
 
   MobileOptions({
@@ -54,16 +66,13 @@ class MobileOptions {
     this.locked = false,
     this.autoDismissible = true,
     this.timeout,
+    this.priority = Priority.defaultPriority,
+    this.importance = Importance.defaultImportance,
     this.chronometer,
-    this.actionType = ActionType.Default,
-    this.notificationLayout = NotificationLayout.BigText,
-    this.notificationCategory = NotificationCategory.Event,
     this.bigPicture,
     this.largeIcon,
     this.icon,
     this.payload,
-    this.actions = const [],
-    this.schedule,
     this.hasAllowedPermissionRational,
   });
 }

@@ -1,3 +1,4 @@
+/*
 // import 'dart:isolate';
 export 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:eazy_notification/eazy_notification.dart';
@@ -259,3 +260,4 @@ class MobileNotificationService implements EazyNotificationService {
         context: context, mobileOptions: mobileOptions);
   }
 }
+*/
